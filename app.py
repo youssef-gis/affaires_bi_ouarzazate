@@ -6,7 +6,7 @@ import geopandas as gpd
 import folium
 from streamlit_folium import st_folium, folium_static
 from folium.plugins import Geocoder, Fullscreen
-from generate_pv import *
+
 date_format = "%Y-%m-%d"
 
 
