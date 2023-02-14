@@ -95,6 +95,7 @@ jupyterlab-pygments==0.2.2
 jupyterlab-widgets==1.1.2
 kiwisolver==1.4.4
 large-image==1.19.3
+large-image-source-gdal==1.19.3
 localtileserver==0.6.4
 logzero==1.7.0
 markdown-it-py==2.1.0
@@ -147,6 +148,8 @@ python-dateutil==2.8.2
 python-json-logger==2.0.5
 pytz==2022.7.1
 pytz-deprecation-shim==0.1.0.post0
+pywin32==305
+pywinpty==2.0.10
 PyYAML==6.0
 pyzmq==25.0.0
 rasterio==1.3.5.post1
