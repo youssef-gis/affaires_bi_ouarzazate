@@ -6,6 +6,7 @@ import geopandas as gpd
 import folium
 from streamlit_folium import st_folium, folium_static
 from folium.plugins import Geocoder, Fullscreen
+from generate_pv import *
 date_format = "%Y-%m-%d"
 
 
@@ -23,7 +24,7 @@ def main():
     def convert_df(df):
         # IMPORTANT: Cache the conversion to prevent computation on every rerun 
             
-        return df.to_csv( sep=';',index=False, header=False).encode('latin1') 
+        return df.to_csv( sep=';',index=False).encode('latin1') 
 
     if choice == "Importer les requisitions":
         st.subheader("Ajouter une requisition")
@@ -178,12 +179,12 @@ def main():
             min_index = st.slider("Le premier dossier dans le marché:", 1, int(df.Numéro_Séquentiel.max()), 0)
             max_index = st.slider("Le dernier dossier dans le marché:", 1, int(df.Numéro_Séquentiel.max()), 0)
 
-            unique_list_0 = [i[0] for i in view_all_task_names()]
-            view_by_task_name =  st.selectbox("Selectionner une requisition à afficher:",unique_list_0)  
+            # unique_list_0 = [i[0] for i in view_all_task_names()]
+            # view_by_task_name =  st.selectbox("Selectionner une requisition à afficher:",unique_list_0)  
 
 
 
-            filtered_df = df[(df['requisition_ou_titre'] == view_by_task_name) | ((df.Numéro_Séquentiel >= min_index) & (df.Numéro_Séquentiel <= max_index)) ]
+            filtered_df = df[(df['requisition_ou_titre'] == view_by_requisition_name) | ((df.Numéro_Séquentiel >= min_index) & (df.Numéro_Séquentiel <= max_index)) ]
                         
             # Create a geometry column from latitude and longitude
             df_na=filtered_df.dropna(subset=['x', 'y'])
@@ -205,6 +206,7 @@ def main():
             gdf_2 = gpd.GeoDataFrame(df_zone_2, geometry=gpd.points_from_xy(df_zone_2.x, df_zone_2.y))# type: ignore
             gdf_2.crs = 'epsg:26192'
             gdf_2 = gdf_2.to_crs( 'epsg:4326')
+            
 
             df2 = pd.DataFrame(gdf_2)
             # df2.to_csv('zone_2.csv', index=False).encode('latin1') 
@@ -366,6 +368,67 @@ def main():
             result = view_all_data()
             clean_df = pd.DataFrame(result,columns=["Numéro_Séquentiel","requisition_ou_titre","date_bornage", "zone_projection","x", "y", "nature_d_affaire" ,"affaires", "cloture", "observation", "commune", "mois_dexecution", "periode_d_execution", "dxf_path"])
             st.dataframe(clean_df)
+
+    elif choice == "Rédiger le pv de Récéption":
+
+        st.subheader("Rédiger le pv de Récéption: ")
+        with st.form(key='pv_form'):
+            EXERCICE_BUDGETAIRE_YEAR = st.date_input("EXERCICE BUDGETAIRE de l'année:") 
+            EXERCICE_BUDGETAIRE_YEAR = EXERCICE_BUDGETAIRE_YEAR.year#type:ignore
+
+            NATURE_DU_DOSSIER = st.text_input("La nature du dossier: ", "Quatrième Trimestre "+str(EXERCICE_BUDGETAIRE_YEAR))
+            NUMERO_PV = st.number_input("Le numéro du pv: ")
+            NUMERO_PV = int(NUMERO_PV)
+
+            result = view_all_data()
+            df_pv = pd.DataFrame(result,columns=["Numéro_Séquentiel","requisition_ou_titre","date_bornage", "zone_projection","x", "y", "nature_d_affaire" ,"affaires", "cloture", "observation", "commune", "mois_dexecution", "periode_d_execution", "dxf_path"])
+            Date_du_PV = st.date_input("Selectionner le mois du pv: ")
+            Date_du_PV_month = Date_du_PV.month#type:ignore
+            # df_pv.index = df_pv.index + 1
+            # df_pv.reset_index(inplace=True)
+            # df_pv.rename(columns={'index':'Numero_Sequentiel'}, inplace=True)
+
+            min_index = st.slider("Le premier dossier Livré dans le mois:", 1, int(df_pv.Numéro_Séquentiel.max()), 1)
+            max_index = st.slider("Le dernier dossier Livré dans le mois:", 1, int(df_pv.Numéro_Séquentiel.max()), int(df_pv.Numéro_Séquentiel.max()))
+
+            affaires_retournee_sans_levee = len(df_pv[(df_pv["affaires"]=="Non levé") ])
+            
+            filtered_df = df_pv[(df_pv.Numéro_Séquentiel >= min_index) & (df_pv.Numéro_Séquentiel <= max_index) & (df_pv["affaires"]=="Livrée") ]
+
+            affaires_livree = len(filtered_df)
+
+            filtered_df = filtered_df[['Numéro_Séquentiel', 'requisition_ou_titre', 'observation' ]]
+
+            dict_df = filtered_df.to_dict(orient='list')
+
+            for i, value in enumerate(dict_df['Numéro_Séquentiel']):
+                dict_df['Numéro_Séquentiel'][i] = str(value)
+
+            for i, value in enumerate(dict_df['observation']):
+                dict_df['observation'][i] = ''
+
+            # pv_df = df_pv[df_pv["periode_d_execution"] == Date_du_PV]
+            # pv_df = pv_df.reset_index()
+
+            Retard_Livree = st.text_input("Retard par rapport à la livraison: ", "Néant")
+
+            Retard_Rejetee = st.text_input("Retard par rapport au rejet : ", "Néant")
+
+            nbr_affaires_non_acceptes = st.text_input("Nombre d'affaires non acceptées suite au rejet: ", "Néant")
+
+            nbr_affaires_non_Livrees = st.text_input("Nombre d'affaires non livrées après 60 jours suite au rejet: ", "Néant")
+
+            nbr_affaires_non_recuperees = st.text_input("Nombre d'affaires non récupérées suite au rejet après 60 jours: ", "Néant")
+
+            nbr_affaires_retournee_sans_levee = st.number_input("Nombre d'affaires retournées sans levé pour cas de forces majeures: ", affaires_retournee_sans_levee)
+
+            #Date_du_PV = st.date_input("La date du pv: " )
+
+            submit_bt = st.form_submit_button(label="Télécharger le Pv")
+
+        if submit_bt:
+            generate_pv(EXERCICE_BUDGETAIRE_YEAR, NATURE_DU_DOSSIER, NUMERO_PV,Date_du_PV, Date_du_PV_month, affaires_livree, Retard_Livree, Retard_Rejetee,nbr_affaires_non_acceptes,
+                        nbr_affaires_non_Livrees, nbr_affaires_non_recuperees, nbr_affaires_retournee_sans_levee, dict_df   )
    
     else:
         st.subheader("Exporter les données")
