@@ -200,3 +200,4 @@ whiteboxgui==2.2.0
 widgetsnbextension==3.6.2
 xyzservices==2022.9.0
 zipp==3.12.1
+libgdal-dev
