@@ -95,7 +95,6 @@ jupyterlab-pygments==0.2.2
 jupyterlab-widgets==1.1.2
 kiwisolver==1.4.4
 large-image==1.19.3
-large-image-source-gdal==1.19.3
 localtileserver==0.6.4
 logzero==1.7.0
 markdown-it-py==2.1.0
