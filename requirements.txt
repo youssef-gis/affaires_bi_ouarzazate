@@ -200,3 +200,4 @@ whiteboxgui
 widgetsnbextension
 xyzservices
 zipp
+gdal
