@@ -9,7 +9,6 @@ from folium.plugins import Geocoder, Fullscreen
 from folium.plugins import MarkerCluster
 from shapely.geometry import Point
 
-from generate_pv import *
 
 st.set_page_config(layout="wide")
 date_format = "%Y-%m-%d"
