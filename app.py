@@ -236,7 +236,7 @@ def main():
                 # add the marker cluster group to the folium map
                 mcg.add_to(m)
 
-                folium_static(m)
+                st_folium(m)
 
 
 
