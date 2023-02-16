@@ -1,9 +1,16 @@
 import sqlite3
 import pandas as pd
-import subprocess
+import pyproj 
+
 import streamlit as st  
-
-
+from geopy.distance import distance #type:ignore
+import geopandas as gpd
+import folium
+from streamlit_folium import st_folium, folium_static
+from folium.plugins import Geocoder, Fullscreen
+from folium.plugins import MarkerCluster
+from shapely.geometry import Point
+from shapely import wkt
 
 conn = sqlite3.connect('bi_ouarzazate.db',check_same_thread=False)
 c = conn.cursor()
@@ -52,7 +59,28 @@ def delete_data(requisition_ou_titre):
 	conn.commit()
 
 
-def launch_app(df):
-	subprocess.Popen(["C:/Program Files/QGIS 3.22.3/bin/qgis-bin"])
+def find_closest_points(point, gdf, num_points=3):
+    
+	# Define the target CRS for the projection
+    # target_crs = 'EPSG:26191'  # UTM zone 32N
+    # point = Point(point)
+    # gdf['geometry'] = gdf['geometry'].apply(wkt.loads)
+    
+# Create a Transformer object for the coordinate transformation
+    # transformer = pyproj.Transformer.from_crs(gdf.crs, target_crs, always_xy=True)
+    
+    # Project the reference point to the target CRS
+    # ref_point_proj = Point(transformer.transform(point.x, point.y))
+    
+    # Project the geometry column to the target CRS
+    # gdf_proj = gdf.to_crs(target_crs)
+    
+    # Calculate the distance between the reference point and each point in the geopandas dataframe
+	
+    gdf['distance'] = gdf.geometry.apply(lambda  x: point.distance(x))
+    # gdf_proj = gdf.to_crs('EPSG:4326')
+    # sort the dataframe by distance and select the closest points
+    closest_points = gdf.sort_values(by='distance').head(num_points)
+    # print(closest_points)
 
-
+    return closest_points
