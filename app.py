@@ -9,7 +9,7 @@ from folium.plugins import Geocoder, Fullscreen
 from folium.plugins import MarkerCluster
 from shapely.geometry import Point
 
-
+from generate_pv import *
 
 st.set_page_config(layout="wide")
 date_format = "%Y-%m-%d"
@@ -33,7 +33,7 @@ def main():
 
     if choice == "Importer les requisitions":
         st.subheader("Ajouter une requisition")
-        with st.expander("Importer les données Manuellement:", expanded=True):
+        with st.expander("Importer les données Manuellement:"):
             col1,col2 = st.columns(2)
             with col1:
                 numero_sequentiel = st.number_input("Entrer le numéro séquentiel de la requisition: ")
@@ -140,7 +140,7 @@ def main():
                 # print(rows_to_export)
                 # concatenate dataframes
                 combined_df = pd.concat([df1, df2], axis=0)
-                csv = convert_df(combined_df)
+                
 
                             # Create a Folium map
                 # print(gdf_1)
@@ -157,6 +157,7 @@ def main():
 
                 # find the closest points to the reference point
                 closest_points = find_closest_points(reference_point, combined_gdf , min_index)
+                csv = convert_df(closest_points)
 
                 m = folium.Map(location=[30.9377651615862, -6.948154455820113], zoom_start=5, control_scale=True, tiles="https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",attr="Google Satellite Hybrid")#type:ignore
 
@@ -169,26 +170,26 @@ def main():
 
                 Geocoder(collapsed=True).add_to(m)
 
-                for index, row in closest_points.iterrows():#type:ignore
-                                popup_content = "Numéro sequentiel : " + str(row["Numéro_Séquentiel"]) + "<br>" +"La requisition: " + row["requisition_ou_titre"] + "<br>" + "Cloturée: " + row["cloture"] + "<br>" + "L'état de l'affaire: " + row["affaires"] + "<br>" + "Date de la réalisation: " +row["mois_dexecution"].split('-')[2] +'|'+ row["periode_d_execution"]
+                # for index, row in closest_points.iterrows():#type:ignore
+                #                 popup_content = "Numéro sequentiel : " + str(row["Numéro_Séquentiel"]) + "<br>" +"La requisition: " + row["requisition_ou_titre"] + "<br>" + "Cloturée: " + row["cloture"] + "<br>" + "L'état de l'affaire: " + row["affaires"] + "<br>" + "Date de la réalisation: " +row["mois_dexecution"].split('-')[2] +'|'+ row["periode_d_execution"]
 
-                                if row["cloture"] == "OUI":
-                                    color= "#00FF00"
+                #                 if row["cloture"] == "OUI":
+                #                     color= "#00FF00"
 
-                                elif row["affaires"] == "Rejetée":
-                                    color="#FF0000"
+                #                 elif row["affaires"] == "Rejetée":
+                #                     color="#FF0000"
 
-                                elif row["affaires"] == "Livrée":
-                                    color="#ffff00"
+                #                 elif row["affaires"] == "Livrée":
+                #                     color="#ffff00"
 
-                                else :
-                                    color=  "#ffffff"
+                #                 else :
+                #                     color=  "#ffffff"
 
-                                folium.Marker(
-                                    location=[row.geometry.y, row.geometry.x],
-                                    popup=folium.Popup(popup_content, max_width='250'),
-                                icon=folium.Icon(icon_color=color),
-                                ).add_to(m)
+                #                 folium.Marker(
+                #                     location=[row.geometry.y, row.geometry.x],
+                #                     popup=folium.Popup(popup_content, max_width='250'),
+                #                 icon=folium.Icon(icon_color=color),
+                #                 ).add_to(m)
 
                 # for index, row in gdf_2.iterrows():#type:ignore
                 #                 popup_content = "Numero sequentiel : " + str(row["Numéro_Séquentiel"]) + "<br>" +"La requisition: " + row["requisition_ou_titre"] + "<br>" + "Cloturée: " + row["cloture"] + "<br>" + "Statut de l'affaire: " + row["affaires"]  + "<br>" + "Date de la réalisation: " +row["mois_dexecution"].split('-')[2] +'|'+ row["periode_d_execution"]
@@ -216,7 +217,7 @@ def main():
                 #create a marker cluster group for the closest points
                 mcg = MarkerCluster()
                 for idx, row in closest_points.iterrows():
-                    popup = folium.Popup(f"{row['requisition_ou_titre']} ({row['distance']:.1f} km)", max_width=200)
+             
                     popup_content = "La requisition: " + row["requisition_ou_titre"] + "<br>" + "Cloturée: " + row["cloture"] + "<br>" + "L'état de l'affaire: " + row["affaires"] + "<br>" + "Date de la réalisation: " +row["mois_dexecution"].split('-')[2] +'|'+ row["periode_d_execution"]
 
                     if row["cloture"] == "OUI":
