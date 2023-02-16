@@ -161,7 +161,7 @@ def main():
                 m = folium.Map(location=[30.9377651615862, -6.948154455820113], zoom_start=5, control_scale=True, tiles="https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",attr="Google Satellite Hybrid")#type:ignore
 
                 Fullscreen(
-                    position="topright",
+                    position="topleft",
                     title="Expand me",
                     title_cancel="Exit me",
                     force_separate_button=True,
