@@ -102,15 +102,8 @@ def main():
 
                                         # Create a filter in Streamlit
                 min_index = st.slider("Le nombre des affaires proche de la requisitions séléctionnée:", 1, int(df.Numéro_Séquentiel.max()))
-                
 
-                # unique_list_0 = [i[0] for i in view_all_task_names()]
-                # view_by_task_name =  st.selectbox("Selectionner une requisition à afficher:",unique_list_0)
-
-
-
-                
-
+             
                 # Create a geometry column from latitude and longitude
                 df_na=df.dropna(subset=['x', 'y'])
 
@@ -168,50 +161,6 @@ def main():
                 ).add_to(m)
 
                 Geocoder(collapsed=True).add_to(m)
-
-                # for index, row in closest_points.iterrows():#type:ignore
-                #                 popup_content = "Numéro sequentiel : " + str(row["Numéro_Séquentiel"]) + "<br>" +"La requisition: " + row["requisition_ou_titre"] + "<br>" + "Cloturée: " + row["cloture"] + "<br>" + "L'état de l'affaire: " + row["affaires"] + "<br>" + "Date de la réalisation: " +row["mois_dexecution"].split('-')[2] +'|'+ row["periode_d_execution"]
-
-                #                 if row["cloture"] == "OUI":
-                #                     color= "#00FF00"
-
-                #                 elif row["affaires"] == "Rejetée":
-                #                     color="#FF0000"
-
-                #                 elif row["affaires"] == "Livrée":
-                #                     color="#ffff00"
-
-                #                 else :
-                #                     color=  "#ffffff"
-
-                #                 folium.Marker(
-                #                     location=[row.geometry.y, row.geometry.x],
-                #                     popup=folium.Popup(popup_content, max_width='250'),
-                #                 icon=folium.Icon(icon_color=color),
-                #                 ).add_to(m)
-
-                # for index, row in gdf_2.iterrows():#type:ignore
-                #                 popup_content = "Numero sequentiel : " + str(row["Numéro_Séquentiel"]) + "<br>" +"La requisition: " + row["requisition_ou_titre"] + "<br>" + "Cloturée: " + row["cloture"] + "<br>" + "Statut de l'affaire: " + row["affaires"]  + "<br>" + "Date de la réalisation: " +row["mois_dexecution"].split('-')[2] +'|'+ row["periode_d_execution"]
-
-                #                 if row["cloture"] == "OUI":
-                #                     color= "#00FF00"
-
-                #                 elif row["affaires"] == "Rejetée":
-                #                     color="#FF0000"
-
-                #                 elif row["affaires"] == "Livrée":
-                #                     color="#ffff00"
-
-                #                 else :
-                #                     color=  "#ffffff"
-
-                #                 folium.Marker(
-                #                     location=[row.geometry.y, row.geometry.x],
-                #                     popup=folium.Popup(popup_content, max_width='250'),
-                #                 icon=folium.Icon(icon_color=color),
-                #                 ).add_to(m)
-
-                m.save("index.html")
 
                 #create a marker cluster group for the closest points
                 mcg = MarkerCluster()
@@ -438,9 +387,7 @@ def main():
             df_pv = pd.DataFrame(result,columns=["Numéro_Séquentiel","requisition_ou_titre","date_bornage", "zone_projection","x", "y", "nature_d_affaire" ,"affaires", "cloture", "observation", "commune", "mois_dexecution", "periode_d_execution", "dxf_path"])
             Date_du_PV = st.date_input("Selectionner le mois du pv: ")
             Date_du_PV_month = Date_du_PV.month#type:ignore
-            # df_pv.index = df_pv.index + 1
-            # df_pv.reset_index(inplace=True)
-            # df_pv.rename(columns={'index':'Numero_Sequentiel'}, inplace=True)
+     
 
             min_index = st.slider("Le premier dossier Livré dans le mois:", 1, int(df_pv.Numéro_Séquentiel.max()), 1)
             max_index = st.slider("Le dernier dossier Livré dans le mois:", 1, int(df_pv.Numéro_Séquentiel.max()), int(df_pv.Numéro_Séquentiel.max()))
@@ -460,9 +407,6 @@ def main():
 
             for i, value in enumerate(dict_df['observation']):
                 dict_df['observation'][i] = ''
-
-            # pv_df = df_pv[df_pv["periode_d_execution"] == Date_du_PV]
-            # pv_df = pv_df.reset_index()
 
             Retard_Livree = st.text_input("Retard par rapport à la livraison: ", "Néant")
 
