@@ -57,6 +57,8 @@ def main():
                 st.success('La requisition {} a etait ajoutee'.format(n_requisition))
 
         with st.expander("Importer les données depuis un fichier Excel:"):
+            image = "Capture.PNG"
+            st.image(image, caption="Example d'un fichier Excel à importer")
             file_path = st.file_uploader("Upload an Excel file", type=["xlsx"])
             if file_path:
                 import_data(file_path)
