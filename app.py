@@ -16,7 +16,7 @@ date_format = "%Y-%m-%d"
 
 
 def main():
-    st.title('PRESTATION TOPOGRAPHIQUES')
+    st.title('PRESTATIONS TOPOGRAPHIQUES')
     menu = ["Importer les requisitions", "Afficher les requisitions", "Modifier les requisitions",
             "Supprimer les requisitions", "Exporter les requisitions", "Rédiger le pv de Récéption"
             ]
