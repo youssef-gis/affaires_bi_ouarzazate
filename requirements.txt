@@ -10,12 +10,12 @@ nbserverproxy
 owslib
 palettable
 plotly
-streamlit==1.12.2
+streamlit
 streamlit-bokeh-events
 streamlit-folium
 streamlit-keplergl
 affine
-altair==4.0.0rc1
+altair
 aniso8601
 anyio
 argon2-cffi
