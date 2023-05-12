@@ -15,7 +15,7 @@ streamlit-bokeh-events
 streamlit-folium
 streamlit-keplergl
 affine
-altair
+altair==4.0.0rc1
 aniso8601
 anyio
 argon2-cffi
@@ -218,3 +218,4 @@ xyzservices
 zipp
 gdal
 geopy
+
